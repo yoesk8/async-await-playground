@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Async Await Playgroun</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.8.2/dist/chart.min.js"></script>
+</head>
+<body>
+    
+
+    <canvas id="chart" width="800" height="400"></canvas>
+
+    <script>
+
+      const xlabels = [];
+      const yTemps = [];
+       chartIt();
+
+
+       //Chart.js getting started example starts
+    async function chartIt(){
+        const data = await getData();
+       const ctx = document.getElementById('chart').getContext('2d');
+      
+       const myChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+        labels: data.xs,
+        datasets: [{
+            label: 'Combined Land-Surface Air and Sea-Surface Water Temperature in Celsius',
+            data: data.ys,
+            backgroundColor: ['rgba(255, 99, 132, 0.2)'],
+            borderColor: ['rgba(255, 99, 132, 1)'],
+            borderWidth: 1
+        }]
+    },
+    
+});
+    }
+         //Chart.js getting started example finishes
+
+
+        
+        async function getData(){
+  
+            const xs = [];
+            const ys = [];
+
+            const response = await fetch('ZonAnn.Ts+dSST.csv');
+            const data = await response.text();
+            
+            const table = data.split('\n').slice(1);
+            table.forEach(row => {
+                const columns = row.split(',');
+                
+                const year = columns[0];
+                xs.push(year);
+                const temp = columns[1];
+                ys.push(parseFloat(temp)+14)
+                console.log(year,temp);
+            })
+            return {xs, ys}
+        }
+       
+    </script>
+</body>
+</html>
